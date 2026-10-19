@@ -190,6 +190,8 @@ form{display:grid;gap:18px}
 .social a:hover{background:var(--white);border-color:var(--white);color:var(--ink)}
 .social svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
 
+.bw.in-color{filter:grayscale(0) contrast(1)}
+@media (prefers-reduced-motion:reduce){.bw.in-color{transition:none}}
 /* Footer */
 footer.panel{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr));gap:32px}
 footer h4{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 14px}
@@ -553,6 +555,14 @@ document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',(
   const t=b.dataset.copy;const ok=()=>{b.textContent='Скопировано';setTimeout(()=>b.textContent='Копировать',1600)};
   try{navigator.clipboard.writeText(t).then(ok,()=>{b.textContent=t})}catch(e){b.textContent=t}
 }));
+
+/* Phones: photos turn colour one by one as they reach the middle of the screen */
+(function(){
+  if(!('IntersectionObserver' in window)||!matchMedia('(hover: none)').matches)return;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-color');io.unobserve(e.target)}}),{rootMargin:'-35% 0px -35% 0px'});
+  const watch=()=>document.querySelectorAll('img.bw:not(.in-color)').forEach(i=>io.observe(i));
+  watch();new MutationObserver(watch).observe(document.body,{childList:true,subtree:true});
+})();
 </script>
 </body>
 </html>
