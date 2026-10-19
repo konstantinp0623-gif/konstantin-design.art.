@@ -192,6 +192,17 @@ form{display:grid;gap:18px}
 
 .bw.in-color{filter:grayscale(0) contrast(1)}
 @media (prefers-reduced-motion:reduce){.bw.in-color{transition:none}}
+.split{position:relative;display:inline-flex}
+.split-main{border-radius:999px 0 0 999px;padding-right:20px}
+.split-arrow{border-radius:0 999px 999px 0;padding:14px 16px 14px 14px;border-left:1px solid rgba(10,10,10,.18)}
+.split-arrow svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
+.split-arrow[aria-expanded="true"] svg{transform:rotate(180deg)}
+.send-menu{position:absolute;left:0;bottom:calc(100% + 8px);z-index:20;min-width:260px;background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:6px;display:grid;gap:2px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.send-menu button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:2px;padding:11px 14px;border-radius:11px}
+.send-menu button:hover,.send-menu button:focus-visible{background:rgba(255,255,255,.08)}
+.send-menu button[aria-checked="true"] b::after{content:" ✓";font-weight:400}
+.send-menu b{font-weight:600;font-size:.94rem}
+.send-menu small{color:var(--muted);font-size:.78rem}
 /* Footer */
 footer.panel{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr));gap:32px}
 footer h4{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 14px}
@@ -397,10 +408,18 @@ footer .motto{font-size:1.2rem;margin-top:22px;max-width:22rem}
         </div>
         <div class="field full"><label for="comment">Комментарий</label><textarea id="comment" name="comment" placeholder="Сроки, состав семьи, пожелания по стилю"></textarea></div>
         <div class="send">
-          <a class="pill white" id="sendWa" href="https://wa.me/79104740830" target="_blank" rel="noopener">Отправить в WhatsApp</a>
+          <div class="split" id="split">
+            <a class="pill white split-main" id="sendMain" href="https://wa.me/79104740830" target="_blank" rel="noopener"><span id="sendLabel">Отправить в WhatsApp</span></a>
+            <button type="button" class="pill white split-arrow" id="sendMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="sendMenu" aria-label="Выбрать мессенджер"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="send-menu" id="sendMenu" role="menu" hidden>
+              <button type="button" role="menuitemradio" aria-checked="true" data-ch="wa"><b>WhatsApp</b><small>текст заявки уже в сообщении</small></button>
+              <button type="button" role="menuitemradio" aria-checked="false" data-ch="tg"><b>Telegram</b><small>текст скопируется, вставьте в чат</small></button>
+              <button type="button" role="menuitemradio" aria-checked="false" data-ch="vk"><b>ВКонтакте</b><small>текст скопируется, вставьте в сообщение</small></button>
+            </div>
+          </div>
           <button type="button" class="pill ghost" id="copyReq">Скопировать заявку</button>
         </div>
-        <p class="note" id="note">Откроется WhatsApp с готовым текстом заявки, останется нажать «Отправить». Можно скопировать текст и отправить на почту.</p>
+        <p class="note" id="note">Откроется WhatsApp с готовым текстом заявки, останется нажать «Отправить». Стрелка рядом с кнопкой — выбрать Telegram или ВКонтакте.</p>
       </form>
     </div>
   </section>
@@ -537,13 +556,33 @@ function validate(){
   if(!okName)$('name').focus();else if(!okPhone)$('phone').focus();
   return okName&&okPhone;
 }
-function refresh(){$('sendWa').href='https://wa.me/79104740830?text='+encodeURIComponent(text(data()))}
+const CH={
+  wa:{label:'Отправить в WhatsApp',url:t=>'https://wa.me/79104740830?text='+encodeURIComponent(t),copy:false,name:'WhatsApp'},
+  tg:{label:'Отправить в Telegram',url:()=>'https://t.me/K_O_N_S_T_A_N_T_I_N_P',copy:true,name:'Telegram'},
+  vk:{label:'Отправить ВКонтакте',url:()=>'https://vk.ru/gusar_0607',copy:true,name:'ВКонтакте'}};
+let ch='wa';
+function refresh(){$('sendMain').href=CH[ch].url(text(data()))}
+const menu=$('sendMenu'),mbtn=$('sendMenuBtn');
+function setMenu(open){menu.hidden=!open;mbtn.setAttribute('aria-expanded',open);if(open)(menu.querySelector('[aria-checked="true"]')||menu.querySelector('button')).focus()}
+mbtn.addEventListener('click',()=>setMenu(menu.hidden));
+menu.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  ch=b.dataset.ch;menu.querySelectorAll('button').forEach(x=>x.setAttribute('aria-checked',x===b));
+  $('sendLabel').textContent=CH[ch].label;refresh();setMenu(false);$('sendMain').focus();
+  $('note').className='note';$('note').textContent=CH[ch].copy?'Откроется '+CH[ch].name+', а текст заявки скопируется. Вставьте его в чат и отправьте.':'Откроется WhatsApp с готовым текстом заявки, останется нажать «Отправить».';
+}));
+document.addEventListener('click',e=>{if(!menu.hidden&&!e.target.closest('#split'))setMenu(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){setMenu(false);mbtn.focus()}});
+menu.addEventListener('keydown',e=>{if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;e.preventDefault();const bs=[...menu.querySelectorAll('button')],i=bs.indexOf(document.activeElement);bs[(i+(e.key==='ArrowDown'?1:bs.length-1))%bs.length].focus()});
 $('form').addEventListener('input',e=>{refresh();const fe=e.target.closest('.field');if(fe&&fe.classList.contains('err'))validate()});
 $('form').addEventListener('submit',e=>e.preventDefault());
 refresh();
-$('sendWa').addEventListener('click',e=>{
+$('sendMain').addEventListener('click',e=>{
   if(!validate()){e.preventDefault();$('note').className='note';$('note').textContent='Заполните имя и телефон, чтобы отправить заявку.';return}
-  refresh();$('note').className='note ok';$('note').textContent='Если WhatsApp не открылся, скопируйте заявку и отправьте на Konstantinp0623@gmail.com.';
+  refresh();const c=CH[ch];$('note').className='note ok';
+  if(c.copy){
+    $('note').textContent='Текст заявки скопирован. В открывшемся '+c.name+' вставьте его в сообщение и отправьте.';
+    try{navigator.clipboard.writeText(text(data())).catch(()=>{$('note').textContent='Не получилось скопировать автоматически. Нажмите «Скопировать заявку» и вставьте текст в '+c.name+'.'})}catch(err){$('note').textContent='Нажмите «Скопировать заявку» и вставьте текст в '+c.name+'.'}
+  }else{$('note').textContent='Если WhatsApp не открылся, скопируйте заявку и отправьте на Konstantinp0623@gmail.com.'}
 });
 $('copyReq').addEventListener('click',()=>{
   if(!validate())return;const t=text(data());
