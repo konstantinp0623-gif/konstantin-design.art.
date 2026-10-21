@@ -488,7 +488,10 @@ const P=[
   imgs:[['01','Аксонометрия квартиры',1],['02','Планировочное решение',1],['03','Освещение: источники света',1],['04','Освещение: сценарии',1]]},
  {id:'malevich',name:'ЖК «Малевич»',type:'Квартира',rooms:'Кухня-гостиная, спальня, гардероб, санузел, прихожая',
   cover:'malevich-02.jpg',
-  imgs:[['01','Кухня-гостиная',1],['02','Обеденная зона'],['bed-front','Спальня'],['bed-side','Спальня, вид от двери'],['04','Спальня, вид сбоку'],['05','Гардероб'],['06','Прихожая'],['07','Санузел']]}
+  imgs:[['01','Кухня-гостиная',1],['02','Обеденная зона'],['bed-front','Спальня'],['bed-side','Спальня, вид от двери'],['04','Спальня, вид сбоку'],['05','Гардероб'],['06','Прихожая'],['07','Санузел']]},
+ {id:'mytishchi',name:'Мытищи, ул. Медицинская',type:'Квартира',city:'Мытищи',rooms:'Кухня-столовая, спальня, детская, кабинет, ванная, санузел, прихожая',
+  cover:'mytishchi-02.jpg',
+  imgs:[['01','Обеденная зона у окна',1],['02','Кухня-столовая'],['03','Кухня, детали'],['05','Спальня'],['04','Спальня, рабочее место'],['06','Детская, рабочее место'],['07','Детская'],['08','Детская, вид к окну'],['12','Кабинет'],['09','Прихожая',1],['10','Ванная'],['11','Санузел'],['13','Детали интерьера',1]]}
 ];
 const pad=n=>String(n).padStart(2,'0');
 const grid=document.getElementById('grid');
@@ -496,7 +499,7 @@ P.forEach((p,i)=>{
   const b=document.createElement('button');
   b.className='card'+(i<2?' big':'')+(p.doc?' doc':'');
   b.innerHTML=`<div class="img"><img class="${p.doc?'':'bw'}" src="img/${p.cover}" alt="${p.name}" loading="${i<2?'eager':'lazy'}"><span class="num">${pad(i+1)}</span></div>
-  <div class="meta"><h3>${p.name}</h3><div class="sub"><span>${p.doc?'Рабочий проект':p.type} · Москва${p.year?' · '+p.year:''}</span><em>Открыть →</em></div></div>`;
+  <div class="meta"><h3>${p.name}</h3><div class="sub"><span>${p.doc?'Рабочий проект':p.type} · ${p.city||'Москва'}${p.year?' · '+p.year:''}</span><em>Открыть →</em></div></div>`;
   b.addEventListener('click',()=>openP(i));grid.appendChild(b);
 });
 
@@ -506,7 +509,7 @@ function openP(i){
   cur=(i+P.length)%P.length;const p=P[cur];
   if(V.hidden)lastFocus=document.activeElement;
   document.getElementById('vCount').textContent=`Проект ${pad(cur+1)} из ${pad(P.length)}`;
-  document.getElementById('vType').textContent=(p.doc?'Рабочий проект':p.type)+' · Москва';
+  document.getElementById('vType').textContent=(p.doc?'Рабочий проект':p.type)+' · '+(p.city||'Москва');
   document.getElementById('vTitle').textContent=p.name;
   document.getElementById('vFacts').innerHTML=[['Год',p.year],['Помещения',p.rooms],['Состав',p.doc?'Планы, монтаж, освещение, электрика':'Планировка, рабочие чертежи, 3D-визуализации']]
     .filter(f=>f[1]).map(f=>`<div><dt>${f[0]}</dt><dd>${f[1]}</dd></div>`).join('');
