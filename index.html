@@ -240,6 +240,39 @@ footer .motto{font-size:1.2rem;margin-top:22px;max-width:22rem}
 .vnav button:hover{background:var(--panel-2)}
 .vnav b{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(1.2rem,2vw,1.8rem);line-height:1}
 
+
+/* Swipe to close */
+html,body{overscroll-behavior-x:none}
+.viewer{overscroll-behavior:contain;touch-action:pan-y pinch-zoom}
+.viewer.anim{transition:transform .42s cubic-bezier(.22,.8,.24,1)}
+.viewer.dragging,.viewer.anim{box-shadow:-40px 0 80px rgba(0,0,0,.65)}
+.vshade{position:fixed;inset:0;z-index:49;background:#000;opacity:0;pointer-events:none;visibility:hidden}
+.vshade.on{visibility:visible}
+.vshade.anim{transition:opacity .42s cubic-bezier(.22,.8,.24,1)}
+.vhint{font-size:.74rem;color:var(--muted);letter-spacing:.06em;display:none}
+@media (hover:none) and (pointer:coarse){.vhint{display:inline}}
+@media (max-width:420px){.vhint{display:none!important}}
+
+/* Reviews */
+.reviews{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(24px,4vw,64px);align-items:start}
+.reviews .rv-head{display:grid;gap:22px}
+.reviews .rv-head p{margin:0;color:#c9c9c7;max-width:30rem}
+.rv-body{display:grid;gap:18px}
+.stars{display:flex;align-items:flex-end;gap:clamp(6px,1.4vw,14px);padding:34px 4px 6px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.star{all:unset;cursor:pointer;display:block;transform-origin:50% 100%;transition:transform .16s cubic-bezier(.3,.7,.3,1);will-change:transform;line-height:0}
+.star svg{display:block;width:100%;height:auto;overflow:visible}
+.star path{fill:transparent;stroke:#5b5b59;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:10;transition:fill .2s,stroke .2s}
+.star.lit path{fill:var(--white);stroke:var(--white)}
+.star:focus-visible{outline:1px solid var(--white);outline-offset:6px;border-radius:4px}
+.star.pop svg{animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.28) rotate(-8deg)}100%{transform:scale(1)}}
+.star:nth-child(1){width:30px}.star:nth-child(2){width:40px}.star:nth-child(3){width:52px}.star:nth-child(4){width:66px}.star:nth-child(5){width:84px}
+.rv-label{margin:0;font-family:var(--f-display);text-transform:uppercase;font-size:clamp(1.3rem,2.2vw,1.9rem);line-height:1;min-height:1em}
+.rv-label.dim{color:var(--muted);font-family:var(--f-ui);text-transform:none;font-size:.92rem}
+.stars.err .star path{stroke:#ff8a80}
+@media (max-width:860px){.reviews{grid-template-columns:1fr}}
+@media (max-width:560px){.star:nth-child(1){width:26px}.star:nth-child(2){width:34px}.star:nth-child(3){width:44px}.star:nth-child(4){width:56px}.star:nth-child(5){width:70px}}
+@media (prefers-reduced-motion:reduce){.star,.viewer.anim,.vshade.anim{transition:none}.star.pop svg{animation:none}}
 @media (prefers-reduced-motion:reduce){.slide,.bw{transition:none}}
 @media (max-width:1100px){
   .projects{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -430,6 +463,25 @@ footer .motto{font-size:1.2rem;margin-top:22px;max-width:22rem}
     </div>
   </section>
 
+  <section class="panel pad reviews" id="reviews">
+    <div class="rv-head">
+      <span class="eyebrow">Отзывы</span>
+      <h2 class="display">Оцените нашу работу</h2>
+      <p>Если мы уже делали проект вместе, поставьте оценку и напишите пару слов. Отзыв придёт мне лично в WhatsApp.</p>
+    </div>
+    <form class="rv-body" id="rvForm" novalidate>
+      <div class="stars" id="stars" role="radiogroup" aria-label="Оценка от 1 до 5"><button type="button" class="star" role="radio" aria-checked="false" aria-label="1 из 5 — Плохо" data-v="1" tabindex="-1"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button><button type="button" class="star" role="radio" aria-checked="false" aria-label="2 из 5 — Так себе" data-v="2" tabindex="-1"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button><button type="button" class="star" role="radio" aria-checked="false" aria-label="3 из 5 — Нормально" data-v="3" tabindex="-1"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button><button type="button" class="star" role="radio" aria-checked="false" aria-label="4 из 5 — Хорошо" data-v="4" tabindex="-1"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button><button type="button" class="star" role="radio" aria-checked="false" aria-label="5 из 5 — Отлично" data-v="5" tabindex="0"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button></div>
+      <p class="rv-label dim" id="rvLabel" aria-live="polite">Выберите оценку</p>
+      <div class="fields">
+        <div class="field"><label for="rvName">Имя</label><input id="rvName" autocomplete="name" placeholder="Как вас зовут"></div>
+        <div class="field"><label for="rvObj">Проект</label><input id="rvObj" placeholder="Например, ЖК «Режиссёр»"></div>
+        <div class="field full"><label for="rvText">Отзыв</label><textarea id="rvText" placeholder="Что понравилось, что запомнилось"></textarea></div>
+      </div>
+      <div class="send"><a class="pill white" id="rvSend" href="https://wa.me/79104740830" target="_blank" rel="noopener">Отправить отзыв</a></div>
+      <p class="note" id="rvNote">Откроется WhatsApp с готовым текстом, останется нажать «Отправить».</p>
+    </form>
+  </section>
+
   <footer class="panel pad">
     <div>
       <a class="mono" href="#top"><span class="mono-mark" aria-hidden="true">К<i></i>П</span><span class="mono-name">Константин Полилов</span></a>
@@ -440,7 +492,7 @@ footer .motto{font-size:1.2rem;margin-top:22px;max-width:22rem}
           <a href="https://vk.ru/gusar_0607" target="_blank" rel="noopener" aria-label="ВКонтакте" title="ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5c.3 5.6 3.2 9 8.3 9h.5v-3.1c1.8.2 3.2 1.5 3.8 3.1h2.4c-.8-2.6-2.7-4-3.9-4.6 1.2-.7 2.8-2.4 3.2-4.4h-2.2c-.5 1.7-1.9 3.3-3.3 3.5V7.5h-2.2v6.1c-1.4-.4-3.2-2.1-3.3-6.1Z"/></svg></a>
         </div></div>
     </div>
-    <div><h4>Разделы</h4><ul><li><a href="#projects">Проекты</a></li><li><a href="#about">Обо мне</a></li><li><a href="#services">Услуги</a></li><li><a href="#request">Заявка</a></li></ul></div>
+    <div><h4>Разделы</h4><ul><li><a href="#projects">Проекты</a></li><li><a href="#about">Обо мне</a></li><li><a href="#services">Услуги</a></li><li><a href="#request">Заявка</a></li><li><a href="#reviews">Отзывы</a></li></ul></div>
     <div><h4>Связь</h4><ul><li>8 (910) 474-08-30</li><li style="overflow-wrap:anywhere">Konstantinp0623@gmail.com</li><li><a href="https://www.behance.net/b34889d0" target="_blank" rel="noopener">Behance ↗</a></li></ul></div>
     <div class="fine"><span>© 2026 Константин Полилов</span><span>Дизайн интерьеров · Москва</span></div>
   </footer>
@@ -451,6 +503,7 @@ footer .motto{font-size:1.2rem;margin-top:22px;max-width:22rem}
     <div class="vbar">
       <span class="mono"><span class="mono-mark" aria-hidden="true">К<i></i>П</span><span class="mono-name" id="vCount"></span></span>
       <span class="right">
+        <span class="vhint" aria-hidden="true">Свайп вправо — назад</span>
         <button class="pill white sm" id="vClose">Закрыть ✕</button>
       </span>
     </div>
@@ -470,31 +523,31 @@ footer .motto{font-size:1.2rem;margin-top:22px;max-width:22rem}
 
 <script>
 const P=[
- {id:'will-towers',name:'ЖК Will Towers',type:'Квартира',year:'2025',rooms:'Кухня-гостиная, спальня, гардероб, два санузла, прихожая',
+ {id:'will-towers',name:'ЖК Will Towers',type:'Квартира',year:'2025',album:35,rooms:'Кухня-гостиная, спальня, гардероб, два санузла, прихожая',
   cover:'will-towers-01.jpg',
   imgs:[['01','Гостиная',1],['02','Кухня'],['03','Обеденная зона'],['04','Спальня',1],['05','Кухня-гостиная'],['06','Гостиная, ТВ-зона'],['07','Ванная']]},
- {id:'rezhisser',name:'ЖК «Режиссёр»',type:'Квартира',rooms:'Кухня-гостиная, две спальни, детская, ванная, душевая, лоджия',
+ {id:'rezhisser',name:'ЖК «Режиссёр»',type:'Квартира',album:32,rooms:'Кухня-гостиная, две спальни, детская, ванная, душевая, лоджия',
   cover:'rezhisser-03.jpg',
   imgs:[['01','Гостиная',1],['02','Спальня'],['03','Зона отдыха'],['04','Кухня'],['05','Спальня с люстрой'],['06','Детская'],['07','Душевая']]},
- {id:'eniteo',name:'ЖК Eniteo',type:'Квартира',year:'2026',rooms:'Кухня-гостиная, спальня, санузел, прихожая',
+ {id:'eniteo',name:'ЖК Eniteo',type:'Квартира',year:'2026',album:23,rooms:'Кухня-гостиная, спальня, санузел, прихожая',
   cover:'eniteo-04.jpg',
   imgs:[['04','Гостиная'],['02','Гостиная, ТВ-зона'],['01','Спальня'],['03','Спальня, изголовье'],['05','Кухня'],['06','Санузел'],['07','Спальня, вид на окна']]},
- {id:'scandinavia',name:'ЖК «Скандинавия»',type:'Квартира',rooms:'Кухня-гостиная, спальня, детская, два санузла, прихожая',
+ {id:'scandinavia',name:'ЖК «Скандинавия»',type:'Квартира',album:34,rooms:'Кухня-гостиная, спальня, детская, два санузла, прихожая',
   cover:'scandinavia-03.jpg',
   imgs:[['02','Кухня-гостиная',1],['01','Обеденная зона',1],['03','Зона отдыха'],['04','Спальня'],['05','Спальня, вид на окно'],['06','Санузел с ванной'],['07','Санузел'],['08','Гостевой санузел'],['09','Прихожая',1]]},
- {id:'arhitektor',name:'ЖК «Архитектор»',type:'Квартира',year:'2026',rooms:'Гостиная, кухня-столовая, спальня, детская, санузлы',
+ {id:'arhitektor',name:'ЖК «Архитектор»',type:'Квартира',year:'2026',album:40,rooms:'Гостиная, кухня-столовая, спальня, детская, санузлы',
   cover:'arhitektor-02.jpg',
   imgs:[['01','Гостиная'],['02','Спальня',1],['03','Столовая'],['04','Кухня'],['05','Спальня, зонирование рейками'],['06','Детская'],['07','Санузел'],['08','Ванная']]},
- {id:'skolkovo',name:'ЖК «Skolkovo One»',type:'Квартира',rooms:'Кухня-гостиная, спальня, санузел, прихожая',
+ {id:'skolkovo',name:'ЖК «Skolkovo One»',type:'Квартира',album:26,rooms:'Кухня-гостиная, спальня, санузел, прихожая',
   cover:'skolkovo-03.jpg',
   imgs:[['02','Гостиная'],['01','Гостиная, рабочее место'],['03','Обеденная зона'],['04','Кухня'],['05','Спальня'],['06','Спальня, вид сбоку'],['07','ТВ-зона'],['08','Прихожая'],['09','Санузел']]},
  {id:'shagal',name:'ЖК «Шагал»',type:'Квартира',year:'2026',doc:1,rooms:'Рабочий проект',
   cover:'shagal-cover.jpg',
   imgs:[['01','Аксонометрия квартиры',1],['02','План расстановки мебели',1],['03','План демонтажа в 3D',1],['04','План монтажа в 3D',1],['05','Освещение',1]]},
- {id:'ilnoiz',name:'ЖК «Ильнойз»',type:'Квартира',rooms:'Кухня-гостиная, спальня, детская, два санузла, прихожая, балкон',
+ {id:'ilnoiz',name:'ЖК «Ильнойз»',type:'Квартира',album:26,rooms:'Кухня-гостиная, спальня, детская, два санузла, прихожая, балкон',
   cover:'ilnoiz-01.jpg',
   imgs:[['01','Гостиная',1],['02','Спальня',1],['03','Рабочее место'],['04','Кухня'],['05','Прихожая'],['09','Санузел'],['10','Санузел с прачечной'],['06','Спальня, вид на дверь',1],['07','Детская',1],['08','Детская, кровать']]},
- {id:'cherkizovskaya',name:'Квартира на Черкизовской',type:'Квартира',year:'2026',doc:1,rooms:'Рабочий проект',
+ {id:'cherkizovskaya',name:'Квартира на Черкизовской',type:'Квартира',year:'2026',doc:1,album:18,rooms:'Рабочий проект',
   cover:'cherkizovskaya-01.jpg',
   imgs:[['01','Аксонометрия квартиры',1],['02','Планировочное решение',1],['03','Освещение: источники света',1],['04','Освещение: сценарии',1]]},
  {id:'malevich',name:'ЖК «Малевич»',type:'Квартира',rooms:'Кухня-гостиная, спальня, гардероб, санузел, прихожая',
@@ -518,7 +571,7 @@ P.forEach((p,i)=>{
 const V=document.getElementById('viewer');let cur=0,lastFocus=null;
 function openP(i){
   cur=(i+P.length)%P.length;const p=P[cur];
-  if(V.hidden)lastFocus=document.activeElement;
+  const wasHidden=V.hidden;if(wasHidden)lastFocus=document.activeElement;
   document.getElementById('vCount').textContent=`Проект ${pad(cur+1)} из ${pad(P.length)}`;
   document.getElementById('vType').textContent=(p.doc?'Рабочий проект':p.type)+' · '+(p.city||'Москва');
   document.getElementById('vTitle').textContent=p.name;
@@ -529,16 +582,18 @@ function openP(i){
   const cta=document.getElementById('albumCta'),alb=document.getElementById('album'),ab=document.getElementById('albumBtn');
   alb.hidden=true;alb.innerHTML='';ab.setAttribute('aria-expanded','false');ab.textContent='Хочу посмотреть полный альбом проекта';
   cta.hidden=!p.album;
-  if(p.album)document.getElementById('albumText').textContent='Все '+p.album+' листов дизайн-проекта: обмеры, планировки, электрика, освещение, отделка и визуализации.';
+  if(p.album)document.getElementById('albumText').textContent='Все '+p.album+' '+(p.album%10>=2&&p.album%10<=4&&(p.album%100<12||p.album%100>14)?'листа':p.album%10===1&&p.album%100!==11?'лист':'листов')+' '+(p.doc?'рабочего проекта: обмеры, планировки, монтаж, освещение и электрика.':'дизайн-проекта: обмеры, планировки, электрика, освещение, отделка и визуализации.');
   const pr=P[(cur+P.length-1)%P.length],nx=P[(cur+1)%P.length];
   document.getElementById('vPrev').innerHTML=`<span class="eyebrow">← Предыдущий</span><b>${pr.name}</b>`;
   document.getElementById('vNext').innerHTML=`<span class="eyebrow">Следующий →</span><b>${nx.name}</b>`;
   V.hidden=false;V.scrollTop=0;document.body.classList.add('locked');
-  try{history.replaceState(null,'','#'+p.id)}catch(e){}
+  try{if(wasHidden&&!(history.state&&history.state.kpv))history.pushState({kpv:1},'','#'+p.id);else history.replaceState(history.state,'','#'+p.id)}catch(e){}
+  if(wasHidden&&typeof slideIn==='function')slideIn();
   document.getElementById('vClose').focus();
 }
-function closeP(){V.hidden=true;document.body.classList.remove('locked');try{history.replaceState(null,'','#projects')}catch(e){};lastFocus&&lastFocus.focus()}
-document.getElementById('vClose').addEventListener('click',closeP);
+function closeP(fromPop){V.hidden=true;V.classList.remove('dragging','anim');V.style.transform='';shade.classList.remove('on');document.body.classList.remove('locked');
+  try{if(!fromPop&&history.state&&history.state.kpv)history.back();else if(!fromPop)history.replaceState(null,'','#projects')}catch(e){};lastFocus&&lastFocus.focus({preventScroll:true})}
+document.getElementById('vClose').addEventListener('click',()=>animateClose());
 document.getElementById('albumBtn').addEventListener('click',()=>{
   const p=P[cur],alb=document.getElementById('album'),ab=document.getElementById('albumBtn');
   if(!alb.hidden){alb.hidden=true;ab.setAttribute('aria-expanded','false');ab.textContent='Хочу посмотреть полный альбом проекта';return}
@@ -549,8 +604,8 @@ document.getElementById('albumBtn').addEventListener('click',()=>{
 
 document.getElementById('vPrev').addEventListener('click',()=>openP(cur-1));
 document.getElementById('vNext').addEventListener('click',()=>openP(cur+1));
-document.addEventListener('keydown',e=>{if(V.hidden)return;if(e.key==='Escape')closeP();if(e.key==='ArrowRight')openP(cur+1);if(e.key==='ArrowLeft')openP(cur-1)});
-const h=location.hash.slice(1),hi=P.findIndex(p=>p.id===h);if(hi>=0)openP(hi);
+document.addEventListener('keydown',e=>{if(V.hidden)return;if(e.key==='Escape')animateClose();if(e.key==='ArrowRight')openP(cur+1);if(e.key==='ArrowLeft')openP(cur-1)});
+const h=location.hash.slice(1),hi=P.findIndex(p=>p.id===h);
 
 /* Hero slider */
 const slides=[...document.querySelectorAll('.slide')];
@@ -628,6 +683,101 @@ document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',(
   const watch=()=>document.querySelectorAll('img.bw:not(.in-color)').forEach(i=>io.observe(i));
   watch();new MutationObserver(watch).observe(document.body,{childList:true,subtree:true});
 })();
+
+/* Swipe right to close the project (iPhone: finger, Mac: two-finger trackpad swipe) */
+const shade=document.createElement('div');shade.className='vshade';document.body.appendChild(shade);
+const RM=matchMedia('(prefers-reduced-motion: reduce)');
+function setX(x,anim){
+  V.classList.toggle('anim',!!anim);shade.classList.toggle('anim',!!anim);
+  V.style.transform=x?`translate3d(${x}px,0,0)`:'';
+  shade.style.opacity=(0.6*(1-Math.min(x,innerWidth)/innerWidth)).toFixed(3);
+}
+let closing=false;
+function animateClose(){
+  if(closing)return;closing=true;V.classList.remove('dragging');
+  if(RM.matches){closeP();setX(0,false);closing=false;return}
+  setX(innerWidth,true);
+  setTimeout(()=>{closeP();setX(0,false);shade.classList.remove('on');closing=false},430);
+}
+function slideIn(){
+  if(RM.matches)return;shade.classList.add('on');setX(innerWidth,false);V.offsetWidth;setX(0,true);
+  setTimeout(()=>V.classList.remove('anim'),450);
+}
+let sx=null,sy=0,dx=0,mode=null,t0=0;
+V.addEventListener('touchstart',e=>{if(e.touches.length>1||closing){sx=null;return}const t=e.touches[0];sx=t.clientX;sy=t.clientY;dx=0;mode=null;t0=performance.now()},{passive:true});
+V.addEventListener('touchmove',e=>{
+  if(sx===null||mode==='no')return;
+  if(e.touches.length>1){if(mode==='drag')setX(0,true);mode='no';return}
+  const t=e.touches[0],ddx=t.clientX-sx,ddy=t.clientY-sy;
+  if(!mode){if(Math.abs(ddx)<10&&Math.abs(ddy)<10)return;mode=(ddx>0&&Math.abs(ddx)>Math.abs(ddy)*1.3)?'drag':'no';if(mode==='no')return;shade.classList.add('on');V.classList.add('dragging');sx=t.clientX-1;}
+  dx=Math.max(0,t.clientX-sx);e.preventDefault();setX(dx,false);
+},{passive:false});
+function touchEnd(cancel){
+  if(mode==='drag'){const v=dx/Math.max(1,performance.now()-t0);
+    if(!cancel&&(dx>innerWidth*.32||(v>.5&&dx>60)))animateClose();else{V.classList.remove('dragging');setX(0,true)}}
+  mode=null;sx=null;
+}
+V.addEventListener('touchend',()=>touchEnd(false));V.addEventListener('touchcancel',()=>touchEnd(true));
+let wx=0,wt=null,wlock=null;
+function wheelEnd(){
+  if(wlock==='h'){if(wx>innerWidth*.12)animateClose();else{V.classList.remove('dragging');setX(0,true)}}
+  wx=0;wlock=null;
+}
+V.addEventListener('wheel',e=>{
+  if(closing){e.preventDefault();return}
+  clearTimeout(wt);wt=setTimeout(wheelEnd,160);
+  if(wlock==='v')return;
+  if(!wlock){if(Math.abs(e.deltaX)<=Math.abs(e.deltaY)||e.deltaX>=0){wlock='v';return}wlock='h';shade.classList.add('on');V.classList.add('dragging')}
+  e.preventDefault();
+  const k=e.deltaMode===1?16:1;wx=Math.max(0,wx-e.deltaX*k);setX(wx,false);
+  if(wx>innerWidth*.3){wlock='done';animateClose()}
+},{passive:false});
+window.addEventListener('popstate',()=>{if(!V.hidden&&!closing)closeP(true)});
+
+/* Reviews: stars grow left to right, Dock-style magnification */
+(()=>{
+  const box=$('stars'),stars=[...box.querySelectorAll('.star')],lab=$('rvLabel');
+  const L=['Плохо','Так себе','Нормально','Хорошо','Отлично'];let val=0,touching=false;
+  const paint=n=>stars.forEach((s,i)=>s.classList.toggle('lit',i<n));
+  function label(n){lab.textContent=n?L[n-1]:'Выберите оценку';lab.classList.toggle('dim',!n)}
+  function dock(x){
+    stars.forEach(s=>{const r=s.getBoundingClientRect(),c=r.left+r.width/2,d=Math.abs(x-c),f=Math.max(0,1-d/150);
+      const sc=1+.55*f*f*(3-2*f);s.style.transform=`translateY(${-(sc-1)*22}px) scale(${sc.toFixed(3)})`});
+  }
+  function undock(){stars.forEach(s=>s.style.transform='')}
+  function at(x){let best=null,bd=1e9;stars.forEach((s,i)=>{const r=s.getBoundingClientRect(),d=Math.abs(x-(r.left+r.width/2));if(d<bd){bd=d;best=i}});return best+1}
+  function choose(n){
+    val=n;box.classList.remove('err');paint(n);label(n);
+    stars.forEach((s,i)=>{s.setAttribute('aria-checked',i===n-1);s.tabIndex=i===n-1?0:-1});
+    const s=stars[n-1];s.classList.remove('pop');void s.offsetWidth;s.classList.add('pop');rvRefresh();
+  }
+  box.addEventListener('pointermove',e=>{if(RM.matches)return;if(e.pointerType==='mouse'||touching){dock(e.clientX);paint(at(e.clientX));if(touching)label(at(e.clientX))}});
+  box.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){undock();paint(val);label(val)}});
+  box.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'){touching=true;box.setPointerCapture(e.pointerId);if(!RM.matches)dock(e.clientX);paint(at(e.clientX));label(at(e.clientX))}});
+  const up=e=>{if(!touching)return;touching=false;undock();choose(at(e.clientX))};
+  box.addEventListener('pointerup',up);box.addEventListener('pointercancel',()=>{touching=false;undock();paint(val);label(val)});
+  stars.forEach((s,i)=>{
+    s.addEventListener('click',e=>{if(e.pointerType&&e.pointerType!=='mouse')return;choose(i+1)});
+    s.addEventListener('keydown',e=>{
+      let n=null;if(e.key==='ArrowRight'||e.key==='ArrowUp')n=Math.min(5,(val||i+1)+(val?1:0));if(e.key==='ArrowLeft'||e.key==='ArrowDown')n=Math.max(1,(val||i+1)-(val?1:0));
+      if(e.key===' '||e.key==='Enter'){e.preventDefault();choose(i+1);return}
+      if(n){e.preventDefault();choose(n);stars[n-1].focus()}
+    });
+  });
+  function rvText(){
+    return ['Отзыв с сайта konstantin-design.art','Оценка: '+'★'.repeat(val)+'☆'.repeat(5-val)+' ('+val+' из 5)',
+      $('rvName').value.trim()&&'Имя: '+$('rvName').value.trim(),$('rvObj').value.trim()&&'Проект: '+$('rvObj').value.trim(),
+      $('rvText').value.trim()&&'Отзыв: '+$('rvText').value.trim()].filter(Boolean).join('\n');
+  }
+  function rvRefresh(){$('rvSend').href='https://wa.me/79104740830?text='+encodeURIComponent(rvText())}
+  ['rvName','rvObj','rvText'].forEach(id=>$(id).addEventListener('input',rvRefresh));
+  $('rvSend').addEventListener('click',e=>{
+    if(!val){e.preventDefault();box.classList.add('err');label(0);lab.textContent='Сначала поставьте оценку';stars[4].focus();return}
+    rvRefresh();$('rvNote').className='note ok';$('rvNote').textContent='Спасибо! Открываю WhatsApp — нажмите там «Отправить».';
+  });
+})();
+
+if(hi>=0){try{history.replaceState(null,'','#projects');history.pushState({kpv:1},'','#'+P[hi].id)}catch(e){}openP(hi)}
 </script>
 </body>
 </html>
