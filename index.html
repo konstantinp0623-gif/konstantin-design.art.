@@ -282,7 +282,7 @@ html,body{overscroll-behavior-x:none}
 .rv-wrap{display:grid;gap:12px;margin-top:10px;min-width:0}
 .rv-wrap .rv-list{margin-top:0;display:flex;gap:var(--gap);overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
 .rv-wrap .rv-list::-webkit-scrollbar{display:none}
-.rv-wrap .rv-card{flex:0 0 100%;scroll-snap-align:start}
+.rv-wrap .rv-card{flex:0 0 100%;scroll-snap-align:start;align-content:start}
 .rv-nav{display:flex;align-items:center;gap:8px}
 .rv-nav[hidden]{display:none}
 .rv-nav button{all:unset;cursor:pointer;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);display:grid;place-items:center;font-size:1rem;transition:background .2s,color .2s,border-color .2s,opacity .2s}
@@ -805,6 +805,7 @@ if(hi>=0){try{history.replaceState(null,'','#projects');history.pushState({kpv:1
 
 /* Published reviews (only the client's first name is shown) */
 const REVIEWS=[
+  {name:'Даниил',stars:5,text:'Обращались к Константину за дизайном квартиры — и ни разу не пожалели. Он не просто нарисовал красивые картинки, а сначала расспросил, как мы живём, и предложил планировку, которая реально удобна: нашлось место и для гардеробной, и для рабочего уголка. Очень спокойный и терпеливый — я менял решения по плитке раз пять, и ни разу не почувствовал раздражения. После сдачи проекта не пропал: помогал бригаде, с заказами мебели. Живём уже полгода — и до сих пор радуемся. Рекомендую от души!'},
   {name:'Александра',stars:5,text:'Грамотный дизайнер, знаток своего дела! Быстрая и качественная работа, минимум правок, так же очень легко и приятно взаимодействовать. Благодарна Константину за его профессионализм.'}
 ];
 (()=>{const sp=document.querySelector('.star path').getAttribute('d');
