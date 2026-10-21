@@ -203,6 +203,12 @@ form{display:grid;gap:18px}
 .send-menu button[aria-checked="true"] b::after{content:" ✓";font-weight:400}
 .send-menu b{font-weight:600;font-size:.94rem}
 .send-menu small{color:var(--muted);font-size:.78rem}
+.album-cta{background:var(--panel);border-radius:var(--r);padding:clamp(22px,3vw,36px);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.album-cta p{margin:8px 0 0;color:#c9c9c7;max-width:34rem}
+.album{display:grid;gap:var(--gap);scroll-margin-top:90px}
+.album figure{margin:0;background:#fff;border-radius:14px;overflow:hidden;position:relative}
+.album img{width:100%;height:auto;display:block}
+.album figcaption{font-size:.78rem;color:var(--muted);background:var(--panel);padding:10px 14px}
 /* Footer */
 footer.panel{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr));gap:32px}
 footer h4{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 14px}
@@ -453,6 +459,11 @@ footer .motto{font-size:1.2rem;margin-top:22px;max-width:22rem}
       <dl class="vfacts" id="vFacts"></dl>
     </div>
     <div class="gallery" id="vGallery"></div>
+    <div class="album-cta" id="albumCta" hidden>
+      <div><span class="eyebrow">Полный альбом</span><p id="albumText"></p></div>
+      <button type="button" class="pill white" id="albumBtn" aria-expanded="false" aria-controls="album">Хочу посмотреть полный альбом проекта</button>
+    </div>
+    <div class="album" id="album" hidden></div>
     <div class="vnav"><button id="vPrev"></button><button id="vNext"></button></div>
   </div>
 </div>
@@ -489,7 +500,7 @@ const P=[
  {id:'malevich',name:'ЖК «Малевич»',type:'Квартира',rooms:'Кухня-гостиная, спальня, гардероб, санузел, прихожая',
   cover:'malevich-02.jpg',
   imgs:[['01','Кухня-гостиная',1],['02','Обеденная зона'],['bed-front','Спальня'],['bed-side','Спальня, вид от двери'],['04','Спальня, вид сбоку'],['05','Гардероб'],['06','Прихожая'],['07','Санузел']]},
- {id:'mytishchi',name:'Мытищи, ул. Медицинская',type:'Квартира',city:'Мытищи',rooms:'Кухня-столовая, спальня, детская, прихожая, душевая, санузел',
+ {id:'mytishchi',name:'Мытищи, ул. Медицинская',type:'Квартира',city:'Мытищи',album:32,rooms:'Кухня-столовая, спальня, детская, прихожая, душевая, санузел',
   cover:'mytishchi-02.jpg',
   imgs:[['06','Детская, рабочее место'],['07','Детская, шкаф'],['14','Детская, рабочая зона'],['04','Спальня, туалетный столик'],['05','Спальня, боковой ракурс',1],['15','Спальня, фронтальный ракурс',1],['02','Кухня'],['03','Кухня, обеденный стол'],['13','Детали: вазы и гранат',1],['01','Обеденная зона у окна',1],['09','Прихожая'],['16','Прихожая, коридор'],['10','Душевая'],['11','Санузел, полотенцесушитель'],['18','Санузел, инсталляция']]}
 ];
@@ -515,6 +526,10 @@ function openP(i){
     .filter(f=>f[1]).map(f=>`<div><dt>${f[0]}</dt><dd>${f[1]}</dd></div>`).join('');
   const g=document.getElementById('vGallery');g.className='gallery'+(p.doc?' doc':'');
   g.innerHTML=p.imgs.map(([n,c,w])=>`<figure class="${w?'wide':''}"><img src="img/${p.id}-${n}.jpg" alt="${p.name}: ${c}" loading="lazy"><figcaption>${c}</figcaption></figure>`).join('');
+  const cta=document.getElementById('albumCta'),alb=document.getElementById('album'),ab=document.getElementById('albumBtn');
+  alb.hidden=true;alb.innerHTML='';ab.setAttribute('aria-expanded','false');ab.textContent='Хочу посмотреть полный альбом проекта';
+  cta.hidden=!p.album;
+  if(p.album)document.getElementById('albumText').textContent='Все '+p.album+' листов дизайн-проекта: обмеры, планировки, электрика, освещение, отделка и визуализации.';
   const pr=P[(cur+P.length-1)%P.length],nx=P[(cur+1)%P.length];
   document.getElementById('vPrev').innerHTML=`<span class="eyebrow">← Предыдущий</span><b>${pr.name}</b>`;
   document.getElementById('vNext').innerHTML=`<span class="eyebrow">Следующий →</span><b>${nx.name}</b>`;
@@ -524,6 +539,14 @@ function openP(i){
 }
 function closeP(){V.hidden=true;document.body.classList.remove('locked');try{history.replaceState(null,'','#projects')}catch(e){};lastFocus&&lastFocus.focus()}
 document.getElementById('vClose').addEventListener('click',closeP);
+document.getElementById('albumBtn').addEventListener('click',()=>{
+  const p=P[cur],alb=document.getElementById('album'),ab=document.getElementById('albumBtn');
+  if(!alb.hidden){alb.hidden=true;ab.setAttribute('aria-expanded','false');ab.textContent='Хочу посмотреть полный альбом проекта';return}
+  if(!alb.innerHTML)alb.innerHTML=Array.from({length:p.album},(_,i)=>{const n=String(i+1).padStart(2,'0');return `<figure><img src="img/${p.id}-album-${n}.jpg" alt="${p.name}: лист ${i+1}" loading="lazy"><figcaption>Лист ${i+1} из ${p.album}</figcaption></figure>`}).join('');
+  alb.hidden=false;ab.setAttribute('aria-expanded','true');ab.textContent='Свернуть альбом';
+  alb.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+});
+
 document.getElementById('vPrev').addEventListener('click',()=>openP(cur-1));
 document.getElementById('vNext').addEventListener('click',()=>openP(cur+1));
 document.addEventListener('keydown',e=>{if(V.hidden)return;if(e.key==='Escape')closeP();if(e.key==='ArrowRight')openP(cur+1);if(e.key==='ArrowLeft')openP(cur-1)});
