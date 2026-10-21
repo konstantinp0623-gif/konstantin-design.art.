@@ -270,6 +270,14 @@ html,body{overscroll-behavior-x:none}
 .rv-label{margin:0;font-family:var(--f-display);text-transform:uppercase;font-size:clamp(1.3rem,2.2vw,1.9rem);line-height:1;min-height:1em}
 .rv-label.dim{color:var(--muted);font-family:var(--f-ui);text-transform:none;font-size:.92rem}
 .stars.err .star path{stroke:#ff8a80}
+
+.rv-list{display:grid;gap:var(--gap);margin-top:10px}
+.rv-card{margin:0;background:var(--panel-2);border-radius:18px;padding:clamp(20px,2.4vw,30px);display:grid;gap:16px}
+.rv-card .rs{display:flex;gap:4px;align-items:flex-end}
+.rv-card .rs svg{fill:var(--white);display:block}
+.rv-card blockquote{margin:0;font-size:1.02rem;line-height:1.6;color:#e6e6e4}
+.rv-card figcaption{display:flex;align-items:center;gap:12px;font-size:.9rem}
+.rv-card figcaption::before{content:"";width:28px;height:1px;background:var(--muted)}
 @media (max-width:860px){.reviews{grid-template-columns:1fr}}
 @media (max-width:560px){.star:nth-child(1){width:26px}.star:nth-child(2){width:34px}.star:nth-child(3){width:44px}.star:nth-child(4){width:56px}.star:nth-child(5){width:70px}}
 @media (prefers-reduced-motion:reduce){.star,.viewer.anim,.vshade.anim{transition:none}.star.pop svg{animation:none}}
@@ -468,6 +476,7 @@ html,body{overscroll-behavior-x:none}
       <span class="eyebrow">Отзывы</span>
       <h2 class="display">Оцените нашу работу</h2>
       <p>Если мы уже делали проект вместе, поставьте оценку и напишите пару слов. Отзыв придёт мне лично в WhatsApp.</p>
+      <div class="rv-list" id="rvList" aria-label="Отзывы клиентов"></div>
     </div>
     <form class="rv-body" id="rvForm" novalidate>
       <div class="stars" id="stars" role="radiogroup" aria-label="Оценка от 1 до 5"><button type="button" class="star" role="radio" aria-checked="false" aria-label="1 из 5 — Плохо" data-v="1" tabindex="-1"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button><button type="button" class="star" role="radio" aria-checked="false" aria-label="2 из 5 — Так себе" data-v="2" tabindex="-1"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button><button type="button" class="star" role="radio" aria-checked="false" aria-label="3 из 5 — Нормально" data-v="3" tabindex="-1"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button><button type="button" class="star" role="radio" aria-checked="false" aria-label="4 из 5 — Хорошо" data-v="4" tabindex="-1"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button><button type="button" class="star" role="radio" aria-checked="false" aria-label="5 из 5 — Отлично" data-v="5" tabindex="0"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 2.0 L61.2 36.6 L97.6 36.5 L68.1 57.9 L79.4 92.5 L50.0 71.0 L20.6 92.5 L31.9 57.9 L2.4 36.5 L38.8 36.6Z"/></svg></button></div>
@@ -778,6 +787,14 @@ window.addEventListener('popstate',()=>{if(!V.hidden&&!closing)closeP(true)});
 })();
 
 if(hi>=0){try{history.replaceState(null,'','#projects');history.pushState({kpv:1},'','#'+P[hi].id)}catch(e){}openP(hi)}
+
+/* Published reviews (only the client's first name is shown) */
+const REVIEWS=[
+  {name:'Александра',stars:5,text:'Грамотный дизайнер, знаток своего дела! Быстрая и качественная работа, минимум правок, так же очень легко и приятно взаимодействовать. Благодарна Константину за его профессионализм.'}
+];
+(()=>{const sp=document.querySelector('.star path').getAttribute('d');
+  $('rvList').innerHTML=REVIEWS.map(r=>`<figure class="rv-card"><div class="rs" role="img" aria-label="Оценка ${r.stars} из 5">${Array.from({length:r.stars},(_,i)=>`<svg viewBox="0 0 100 100" width="${12+i*3}" height="${12+i*3}" aria-hidden="true"><path d="${sp}"/></svg>`).join('')}</div><blockquote>«${r.text}»</blockquote><figcaption>${r.name}</figcaption></figure>`).join('');
+})();
 </script>
 </body>
 </html>
